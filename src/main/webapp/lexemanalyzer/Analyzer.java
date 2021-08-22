@@ -1,8 +1,8 @@
 package lexemanalyzer;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import static lexemanalyzer.ExpressionChars.*;
 
@@ -23,8 +23,8 @@ public class Analyzer {
      *
      * @return result expression
      */
-    public int getExpressionResult(String expression, Map<String, String> expressionMap) {
-        List<Lexeme> lexemes = lexemeAnalyze(expression, expressionMap);
+    public int getExpressionResult(String expression, HttpServletRequest req, Repository repository) {
+        List<Lexeme> lexemes = lexemeAnalyze(expression, req, repository);
         return bracketsExpression(new LexemeBuffer(lexemes));
     }
 
@@ -34,7 +34,7 @@ public class Analyzer {
      * @return ArrayList lexemes.
      * @throws RuntimeException if unexpected character
      */
-    private List<Lexeme> lexemeAnalyze(String expression, Map<String, String> expressionMap) {
+    private List<Lexeme> lexemeAnalyze(String expression, HttpServletRequest req, Repository repository) {
         ArrayList<Lexeme> lexemes = new ArrayList<>();
         int position = 0;
         while (position < expression.length()) {
@@ -79,7 +79,7 @@ public class Analyzer {
                     } else if (isCertainCharacters(character, A_CHAR, Z_CHAR)) { //letter parse
                         StringBuilder sb = new StringBuilder();
                         do {
-                            sb.append(expressionMap.get(String.valueOf(character)));
+                            sb.append(repository.getParametersData().get(req.getSession().getId()).get(String.valueOf(character)));
                             position++;
                             if (position >= expression.length()) {
                                 break;

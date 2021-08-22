@@ -98,7 +98,7 @@ public class StatefulCalcServletTest {
             }
 
             ResponseRecord response = getResult(httpClient, httpContext);
-            
+
             assertEquals(String.valueOf(result), response.body);
 
         } catch (Exception e) {
@@ -246,13 +246,13 @@ public class StatefulCalcServletTest {
     public void test011() throws Exception {
         CompletableFuture.allOf(
                 IntStream.range(0, 10).mapToObj((i) -> (Runnable) () -> {
-                    final int a = randomInt();
-                    final int b = randomInt();
-                    final Arg<Integer> c = randomChoose(arg("a", a), arg("b", b));
-                    testExpression("(c*(a-b)/b)*a",
-                            ImmutableMap.of("a", a, "b", b, "c", c.name),
-                            (c.val * (a - b) / b) * a);
-                }).map(CompletableFuture::runAsync)
+                            final int a = randomInt();
+                            final int b = randomInt();
+                            final Arg<Integer> c = randomChoose(arg("a", a), arg("b", b));
+                            testExpression("(c*(a-b)/b)*a",
+                                    ImmutableMap.of("a", a, "b", b, "c", c.name),
+                                    (c.val * (a - b) / b) * a);
+                        }).map(CompletableFuture::runAsync)
                         .toArray(CompletableFuture[]::new)
         ).join();
     }
@@ -341,12 +341,12 @@ public class StatefulCalcServletTest {
     @Test
     @DisplayName("Implementation must use Servlets and Filters")
     public void testSources() throws IOException {
-            assertTrue(Utils.findInSource("javax.servlet.Filter"));
-            assertTrue(Utils.findInSource("void doFilter"));
-            assertTrue(Utils.findInSource("javax.servlet.http.HttpServlet"));
-            assertTrue(Utils.findInSource("void doPut"));
-            assertTrue(Utils.findInSource("void doDelete"));
-            assertTrue(Utils.findInSource("void doGet"));
+        assertTrue(Utils.findInSource("javax.servlet.Filter"));
+        assertTrue(Utils.findInSource("void doFilter"));
+        assertTrue(Utils.findInSource("javax.servlet.http.HttpServlet"));
+        assertTrue(Utils.findInSource("void doPut"));
+        assertTrue(Utils.findInSource("void doDelete"));
+        assertTrue(Utils.findInSource("void doGet"));
     }
 
     private Random random = new Random();
