@@ -26,4 +26,4 @@ In case, when expression is set, and it may be evaluated, webapp should return `
 In case, when expression may not be calculated due to lack of data, webapp should return `409` status code and reason of this error.  
 
 All calculations must be integer.
-Webapp must be implemented on the basis of http servlets and ExpressionServlet filters. 
+Webapp must be implemented on the basis of http servlets and servlet.ExpressionServlet filters. 
