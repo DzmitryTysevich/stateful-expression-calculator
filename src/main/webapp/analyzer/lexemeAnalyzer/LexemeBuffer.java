@@ -1,4 +1,4 @@
-package lexemanalyzer;
+package analyzer.lexemeAnalyzer;
 
 import java.util.List;
 

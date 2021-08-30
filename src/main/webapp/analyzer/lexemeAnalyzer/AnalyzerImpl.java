@@ -1,12 +1,13 @@
-package lexemanalyzer;
+package analyzer.lexemeAnalyzer;
 
+import analyzer.Analyzer;
 import data.Repository;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 
-import static lexemanalyzer.ExpressionChars.*;
+import static analyzer.lexemeAnalyzer.ExpressionChars.*;
 
 /**
  * <h3>Parser rules for analyzer:</h3>
@@ -15,7 +16,7 @@ import static lexemanalyzer.ExpressionChars.*;
  * <p>multiplyDivide: <b>factor</b> ((<b>'*'</b> or <b>'/'</b>) <b>factor*</b>);</p>
  * <p>factor: <b>NUMBER</b> or <b>'('expression')'</b>.</p>
  */
-public class Analyzer {
+public class AnalyzerImpl implements Analyzer {
     private final String UNEXPECTED_TOKEN = "Unexpected token: ";
     private final String AT_POSITION = " at position: ";
     private static final String UNEXPECTED_CHARACTER = "Unexpected character: ";
@@ -25,6 +26,7 @@ public class Analyzer {
      *
      * @return result expression
      */
+    @Override
     public int getExpressionResult(String expression, HttpServletRequest req, Repository repository) {
         List<Lexeme> lexemes = lexemeAnalyze(expression, req, repository);
         return bracketsExpression(new LexemeBuffer(lexemes));
@@ -81,7 +83,11 @@ public class Analyzer {
                     } else if (isCertainCharacters(character, A_CHAR, Z_CHAR)) { //letter parse
                         StringBuilder sb = new StringBuilder();
                         do {
-                            sb.append(repository.getParametersData().get(req.getSession().getId()).get(String.valueOf(character)));
+                            String paramValue = repository
+                                    .getParametersData()
+                                    .get(req.getSession().getId())
+                                    .get(String.valueOf(character));
+                            sb.append(paramValue);
                             position++;
                             if (position >= expression.length()) {
                                 break;

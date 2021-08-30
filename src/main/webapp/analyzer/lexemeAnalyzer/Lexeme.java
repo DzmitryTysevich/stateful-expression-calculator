@@ -1,4 +1,4 @@
-package lexemanalyzer;
+package analyzer.lexemeAnalyzer;
 
 public class Lexeme {
     LexemeType type;

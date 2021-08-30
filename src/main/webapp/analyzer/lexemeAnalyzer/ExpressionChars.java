@@ -1,4 +1,4 @@
-package lexemanalyzer;
+package analyzer.lexemeAnalyzer;
 
 public class ExpressionChars {
     public static final char LEFT_BRACKET_CHAR = '(';
