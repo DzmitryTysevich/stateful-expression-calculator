@@ -7,17 +7,28 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
-@WebFilter()
+@WebFilter("/calc/*")
 public class ServletFilter implements javax.servlet.Filter {
+
     @Override
-    public void init(FilterConfig filterConfig) {
+    public void init(FilterConfig config) {
     }
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        servletRequest.setCharacterEncoding("UTF-8");
-        filterChain.doFilter(servletRequest, servletResponse);
+        PrintWriter pw = servletResponse.getWriter();
+        Calendar realTime = new GregorianCalendar();
+        Calendar endPointTime = new GregorianCalendar();
+        endPointTime.set(2021, Calendar.OCTOBER, 1);
+        if (realTime.before(endPointTime)) {
+            filterChain.doFilter(servletRequest, servletResponse);
+        } else {
+            pw.print("Server isn't working now...");
+        }
     }
 
     @Override
