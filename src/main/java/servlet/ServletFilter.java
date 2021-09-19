@@ -8,30 +8,43 @@ import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
+import java.time.LocalDateTime;
 
 @WebFilter("/calc/*")
 public class ServletFilter implements javax.servlet.Filter {
+    private FilterConfig config = null;
+    private boolean active = false;
 
     @Override
     public void init(FilterConfig config) {
+        this.config = config;
+        String act = config.getInitParameter("active");
+        if (act != null) {
+            active = (act.equalsIgnoreCase("true"));
+        }
     }
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         PrintWriter pw = servletResponse.getWriter();
-        Calendar realTime = new GregorianCalendar();
-        Calendar endPointTime = new GregorianCalendar();
-        endPointTime.set(2021, Calendar.OCTOBER, 1);
-        if (realTime.before(endPointTime)) {
-            filterChain.doFilter(servletRequest, servletResponse);
+        if (active) {
+            if (isAllowToWork()) {
+                filterChain.doFilter(servletRequest, servletResponse);
+            } else {
+                pw.print("Server isn't working now...");
+            }
         } else {
-            pw.print("Server isn't working now...");
+            filterChain.doFilter(servletRequest, servletResponse);
         }
+    }
+
+    private boolean isAllowToWork() {
+        return LocalDateTime.now()
+                .isBefore(LocalDateTime.of(2021, 10, 1, 10, 0, 0));
     }
 
     @Override
     public void destroy() {
+        config = null;
     }
 }
