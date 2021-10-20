@@ -1,23 +1,18 @@
 package servlet;
 
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.time.LocalDateTime;
 
 @WebFilter("/calc/*")
 public class ServletFilter implements javax.servlet.Filter {
-    private FilterConfig config = null;
-    private boolean active = false;
+    private FilterConfig filterConfig;
+    private boolean active;
 
     @Override
     public void init(FilterConfig config) {
-        this.config = config;
+        this.filterConfig = config;
         String act = config.getInitParameter("active");
         if (act != null) {
             active = (act.equalsIgnoreCase("true"));
@@ -26,12 +21,14 @@ public class ServletFilter implements javax.servlet.Filter {
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        PrintWriter pw = servletResponse.getWriter();
         if (active) {
             if (isAllowToWork()) {
                 filterChain.doFilter(servletRequest, servletResponse);
             } else {
-                pw.print("Server isn't working now...");
+                String path = "/badServer.jsp";
+                ServletContext servletContext = filterConfig.getServletContext();
+                RequestDispatcher requestDispatcher = servletContext.getRequestDispatcher(path);
+                requestDispatcher.forward(servletRequest, servletResponse);
             }
         } else {
             filterChain.doFilter(servletRequest, servletResponse);
@@ -45,6 +42,6 @@ public class ServletFilter implements javax.servlet.Filter {
 
     @Override
     public void destroy() {
-        config = null;
+        this.filterConfig = null;
     }
 }
